@@ -22,7 +22,7 @@
     "https": {
       "commandName": "Project",
       "dotnetRunMessages": true,
-      "launchBrowser": true, // false -Not open in browser because I'm using Postman
+      "launchBrowser": false, // false -Not open in browser because I'm using Postman
       "launchUrl": "swagger",
       "applicationUrl": "https://localhost:7260;http://localhost:5281",
       "environmentVariables": {
