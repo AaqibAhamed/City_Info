@@ -83,7 +83,7 @@ namespace CityInfo.API.Controllers
         }
 
         [HttpPut("{pointOfIntersetId}")]
-        public ActionResult UpdatePointOfInterst(int cityId, int pointOfIntersetId,
+        public ActionResult<PointOfInterestDto> UpdatePointOfInterst(int cityId, int pointOfIntersetId,
             PointOfInterestUpdateDto pointOfInterestUpdateDto)
         {
             var city = CitiesDataStore.Current.Cities.FirstOrDefault(c => c.Id == cityId);
@@ -105,7 +105,10 @@ namespace CityInfo.API.Controllers
             pointOfIntersetIdFromStore.Name = pointOfInterestUpdateDto.Name;
             pointOfIntersetIdFromStore.Description = pointOfInterestUpdateDto.Description;
 
-            return NoContent();
+            // return NoContent(); - not looks nice
+            return Ok(pointOfIntersetIdFromStore); // when we want response back
+
+
         }
     }
 }
