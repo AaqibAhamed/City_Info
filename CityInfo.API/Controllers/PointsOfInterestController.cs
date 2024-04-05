@@ -46,7 +46,7 @@ namespace CityInfo.API.Controllers
 
         [HttpPost]
         public ActionResult<PointOfInterestDto> CreatePointOfInterst(int cityId,
-            [FromBody] PointOfInterestCreationDto pointOfInterestCreationDto)
+            PointOfInterestCreationDto pointOfInterestCreationDto)
         //  [FromBody] not neccesary since we have [ApiController] at top of the controller
         {
             var city = CitiesDataStore.Current.Cities.FirstOrDefault(c => c.Id == cityId);
