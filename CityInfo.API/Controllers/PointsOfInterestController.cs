@@ -154,5 +154,28 @@ namespace CityInfo.API.Controllers
 
             return Ok(pointOfIntersetIdFromStore);
         }
+
+        [HttpDelete("{pointOfIntersetId}")]
+        public ActionResult DeletePointOfInterst(int cityId, int pointOfIntersetId)
+        {
+            var city = CitiesDataStore.Current.Cities.FirstOrDefault(p => p.Id == cityId);
+
+            if (city == null)
+            {
+                return NotFound();
+            }
+
+            var pointOfIntersetIdFromStore = city.PointsOfInterest.FirstOrDefault(p=>p.Id == pointOfIntersetId);
+
+            if(pointOfIntersetIdFromStore == null)
+            {
+                return NotFound();
+            }
+
+            city.PointsOfInterest.Remove(pointOfIntersetIdFromStore);
+
+            return NoContent();
+
+        }
     }
 }
