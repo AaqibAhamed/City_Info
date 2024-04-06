@@ -1,4 +1,5 @@
 ﻿using CityInfo.API.Models;
+using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 
 namespace CityInfo.API.Controllers
@@ -105,10 +106,53 @@ namespace CityInfo.API.Controllers
             pointOfIntersetIdFromStore.Name = pointOfInterestUpdateDto.Name;
             pointOfIntersetIdFromStore.Description = pointOfInterestUpdateDto.Description;
 
-            // return NoContent(); - not looks nice
+            // return NoContent(); // not looks nice
             return Ok(pointOfIntersetIdFromStore); // when we want response back
 
+        }
 
+        [HttpPatch("{pointOfIntersetId}")]
+        public ActionResult PartiallyUpdatePointOfInterst(int cityId, int pointOfIntersetId,
+            JsonPatchDocument<PointOfInterestUpdateDto> patchDocument)
+        {
+            var city = CitiesDataStore.Current.Cities.FirstOrDefault(c => c.Id == cityId);
+
+            if (city == null)
+            {
+                return NotFound();
+            }
+
+            var pointOfIntersetIdFromStore = city.PointsOfInterest.FirstOrDefault(p => p.Id == pointOfIntersetId);
+
+            if (pointOfIntersetIdFromStore == null)
+            {
+                return NotFound();
+            }
+
+            var pointOfIntersetToPatch = new PointOfInterestUpdateDto()
+            {
+                Name = pointOfIntersetIdFromStore.Name,
+                Description = pointOfIntersetIdFromStore.Description,
+            };
+
+            patchDocument.ApplyTo(pointOfIntersetToPatch, ModelState);
+
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            if (!TryValidateModel(pointOfIntersetToPatch))
+            {
+                return BadRequest(ModelState);
+            }
+
+            pointOfIntersetIdFromStore.Name = pointOfIntersetToPatch.Name;
+            pointOfIntersetIdFromStore.Description = pointOfIntersetToPatch.Description;
+
+            // return NoContent(); //not looks nice
+
+            return Ok(pointOfIntersetIdFromStore);
         }
     }
 }
