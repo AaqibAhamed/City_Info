@@ -19,6 +19,13 @@
     <None Update="Files\getting-acquainted-with-aspnet-core-slides.pdf">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Update="getting-started-with-rest-slides.pdf">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="upload\" />
   </ItemGroup>
 
 </Project>
