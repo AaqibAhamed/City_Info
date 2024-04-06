@@ -10,7 +10,7 @@ builder.Services.AddControllers(options =>
 {
    // options.InputFormatters(options => ...
     options.ReturnHttpNotAcceptable = true;
-}).AddXmlDataContractSerializerFormatters();
+}).AddNewtonsoftJson().AddXmlDataContractSerializerFormatters();
 
 builder.Services.AddProblemDetails(options =>
 {
