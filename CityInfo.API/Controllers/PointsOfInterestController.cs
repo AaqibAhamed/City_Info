@@ -8,6 +8,12 @@ namespace CityInfo.API.Controllers
     [ApiController]
     public class PointsOfInterestController : Controller
     {
+        private readonly ILogger<PointsOfInterestController> _logger;
+
+        public PointsOfInterestController(ILogger<PointsOfInterestController> logger)
+        {
+            _logger = logger ?? throw new ArgumentNullException(nameof(logger)) ;
+        }
 
         [HttpGet]
         public ActionResult<IEnumerable<PointOfInterestDto>> GetPointsOfInterest(int cityId)
@@ -16,6 +22,7 @@ namespace CityInfo.API.Controllers
 
             if (city == null)
             {
+                _logger.LogInformation($"City with id {cityId} was mot found when accessing PointsOfInterest ");
                 return NotFound();
             }
 
