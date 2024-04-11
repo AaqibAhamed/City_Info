@@ -11,18 +11,20 @@ builder.Logging.AddConsole();
 
 builder.Services.AddControllers(options =>
 {
-   // options.InputFormatters(options => ...
+    // options.InputFormatters(options => ...
     options.ReturnHttpNotAcceptable = true;
 }).AddNewtonsoftJson().AddXmlDataContractSerializerFormatters();
 
-builder.Services.AddProblemDetails(options =>
-{
-    options.CustomizeProblemDetails = ctx =>
-    {
-        ctx.ProblemDetails.Extensions.Add("additionalInfo", "Additional info example");
-        ctx.ProblemDetails.Extensions.Add("server", Environment.MachineName);
-    };
-});
+builder.Services.AddProblemDetails();
+
+//builder.Services.AddProblemDetails(options =>
+//{
+//    options.CustomizeProblemDetails = ctx =>
+//    {
+//        ctx.ProblemDetails.Extensions.Add("additionalInfo", "Additional info example");
+//        ctx.ProblemDetails.Extensions.Add("server", Environment.MachineName);
+//    };
+//});
 
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
@@ -33,6 +35,11 @@ builder.Services.AddSingleton<FileExtensionContentTypeProvider>(); // mapping fi
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
+if (!app.Environment.IsDevelopment())
+{
+    app.UseExceptionHandler();
+}
+
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
