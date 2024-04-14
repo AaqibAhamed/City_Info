@@ -2,22 +2,21 @@
 {
     public class LocalMailService : IMailService
     {
-        private string mailTo = string.Empty;
-
-        private string mailFrom = string.Empty;
+        private string _mailTo = string.Empty;
+        private string _mailFrom = string.Empty;
 
         public LocalMailService(IConfiguration configuration)
         {
-            mailFrom = configuration["mailSettings:mailFromAddress"];
-            mailTo = configuration["mailSettings:mailToAddress"];
+            _mailTo = configuration["mailSettings:mailToAddress"];
+            _mailFrom = configuration["mailSettings:mailFromAddress"];
         }
 
         public void Send(string subject, string message)
         {
-            Console.WriteLine($"Mail from {mailFrom} mail to {mailTo}, with {nameof(LocalMailService)}. ");
-            Console.WriteLine($"Subjet : {subject}");
-            Console.WriteLine($"Mail: {message}");
-
+            // send mail - output to console window
+            Console.WriteLine($"Mail from {_mailFrom} to {_mailTo}, with {nameof(LocalMailService)}.");
+            Console.WriteLine($"Subject: {subject}");
+            Console.WriteLine($"Message: {message}");
         }
     }
 }
