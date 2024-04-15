@@ -47,8 +47,9 @@ builder.Services.AddSingleton<FileExtensionContentTypeProvider>(); // mapping fi
 
 builder.Services.AddSingleton<CitiesDataStore>();
 
-builder.Services.AddDbContext<CityInfoContext>(DbContextOptions
-    => DbContextOptions.UseSqlite("Data Source=CityInfo.db"));  // Regsiter with Scoped lifetime 
+builder.Services.AddDbContext<CityInfoContext>(DbContextOptions  // Regsiter with Scoped lifetime 
+    => DbContextOptions.UseSqlite( 
+        builder.Configuration["ConnectionStrings:CityInfoDBConnectionString"]));  //"Data Source=CityInfo.db")); 
 
 # if DEBUG
 builder.Services.AddTransient<IMailService, LocalMailService>();
