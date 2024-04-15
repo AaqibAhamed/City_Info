@@ -45,17 +45,19 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddSingleton<FileExtensionContentTypeProvider>(); // mapping file extentions in requestion application/pdf
 
+# if DEBUG
+builder.Services.AddTransient<IMailService, LocalMailService>();
+# else
+builder.Services.AddTransient<IMailService, CloudMailService>();
+# endif
+
 builder.Services.AddSingleton<CitiesDataStore>();
 
 builder.Services.AddDbContext<CityInfoContext>(DbContextOptions  // Regsiter with Scoped lifetime 
     => DbContextOptions.UseSqlite( 
         builder.Configuration["ConnectionStrings:CityInfoDBConnectionString"]));  //"Data Source=CityInfo.db")); 
 
-# if DEBUG
-builder.Services.AddTransient<IMailService, LocalMailService>();
-# else
-builder.Services.AddTransient<IMailService, CloudMailService>();
-# endif
+builder.Services.AddScoped<ICityInfoRepository, CityInfoRepository>();
 
 var app = builder.Build();
 
