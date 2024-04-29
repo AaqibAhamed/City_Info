@@ -1,4 +1,5 @@
-﻿using CityInfo.API.Models;
+﻿using AutoMapper;
+using CityInfo.API.Models;
 using CityInfo.API.Services;
 using Microsoft.AspNetCore.Mvc;
 
@@ -13,9 +14,12 @@ namespace CityInfo.API.Controllers
 
         private readonly ICityInfoRepository _cityInfoRepository;
 
-        public CitiesController(ICityInfoRepository cityInfoRepository)
+        private readonly IMapper _mapper;
+
+        public CitiesController(ICityInfoRepository cityInfoRepository, IMapper mapper)
         {
             _cityInfoRepository = cityInfoRepository ?? throw new ArgumentNullException(nameof(cityInfoRepository));
+            _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
         }
 
 
@@ -32,19 +36,22 @@ namespace CityInfo.API.Controllers
 
             var cityEntites = await _cityInfoRepository.GetAllCitiesAsync();
 
-            var results = new List<CityWithoutPointOfInterestDto>();
+            //var results = new List<CityWithoutPointOfInterestDto>();
 
-            foreach (var cityEntity in cityEntites)
-            {
-                results.Add(new CityWithoutPointOfInterestDto
-                {
-                    Id = cityEntity.Id,
-                    Name = cityEntity.Name,
-                    Description = cityEntity.Description,
-                });
+            //foreach (var cityEntity in cityEntites)
+            //{
+            //    results.Add(new CityWithoutPointOfInterestDto
+            //    {
+            //        Id = cityEntity.Id,
+            //        Name = cityEntity.Name,
+            //        Description = cityEntity.Description,
+            //    });
 
-            }
-            return Ok(results);
+            //}
+            //return Ok(results);
+
+            return Ok(_mapper.Map<IEnumerable<CityWithoutPointOfInterestDto>>(cityEntites));
+
         }
 
         /* public JsonResult GetCity(int id)
@@ -52,17 +59,33 @@ namespace CityInfo.API.Controllers
              return new JsonResult (_citiesDataStore.Cities.FirstOrDefault(x => x.Id == id));
          }*/
 
-        //[HttpGet("{id}")]
-        //public ActionResult<CityDto> GetCitiy(int id)
-        //{
-        //    var selectedCity = (_citiesDataStore.Cities.FirstOrDefault(c => c.Id == id));
+        [HttpGet("{id}")]
+        public async Task<IActionResult> GetCitiy(int id, bool includePointsOfInterest = false)
+        {
+            //var selectedCity = (_citiesDataStore.Cities.FirstOrDefault(c => c.Id == id));
 
-        //    if (selectedCity == null)
-        //    {
-        //        return NotFound();
-        //    }
+            //if (selectedCity == null)
+            //{
+            //    return NotFound();
+            //}
 
-        //    return Ok(selectedCity);
-        //}
+            //return Ok(selectedCity);
+
+            var selectedCity = await _cityInfoRepository.GetCityAsync(id, includePointsOfInterest);
+
+            if(selectedCity == null)
+            {
+                return NotFound();
+            }
+
+            if (!includePointsOfInterest)
+            {
+                return Ok(_mapper.Map<CityWithoutPointOfInterestDto>(selectedCity));
+            }
+
+            return Ok(_mapper.Map<CityDto>(selectedCity));
+
+
+        }
     }
 }
