@@ -29,26 +29,35 @@ namespace CityInfo.API.Controllers
             return new JsonResult(_citiesDataStore.Cities);          
         }*/
 
+        //[HttpGet]
+        //public async Task<ActionResult<IEnumerable<CityWithoutPointOfInterestDto>>> GetCities()
+        //{     
+
+        //    var cityEntites = await _cityInfoRepository.GetAllCitiesAsync();
+
+        //    var results = new List<CityWithoutPointOfInterestDto>();
+
+        //    foreach (var cityEntity in cityEntites)
+        //    {
+        //        results.Add(new CityWithoutPointOfInterestDto
+        //        {
+        //            Id = cityEntity.Id,
+        //            Name = cityEntity.Name,
+        //            Description = cityEntity.Description,
+        //        });
+
+        //    }
+        //   // return Ok(results);
+
+        //    return Ok(_mapper.Map<IEnumerable<CityWithoutPointOfInterestDto>>(cityEntites));
+
+        //}
+
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<CityWithoutPointOfInterestDto>>> GetCities()  
+        public async Task<ActionResult<IEnumerable<CityWithoutPointOfInterestDto>>> GetCities([FromQuery(Name = "filterOnName")] string? name)
         {
-            //return Ok(_citiesDataStore.Cities);
-
-            var cityEntites = await _cityInfoRepository.GetAllCitiesAsync();
-
-            //var results = new List<CityWithoutPointOfInterestDto>();
-
-            //foreach (var cityEntity in cityEntites)
-            //{
-            //    results.Add(new CityWithoutPointOfInterestDto
-            //    {
-            //        Id = cityEntity.Id,
-            //        Name = cityEntity.Name,
-            //        Description = cityEntity.Description,
-            //    });
-
-            //}
-            //return Ok(results);
+            
+            var cityEntites = await _cityInfoRepository.GetCitiesByFiterAsync(name);
 
             return Ok(_mapper.Map<IEnumerable<CityWithoutPointOfInterestDto>>(cityEntites));
 
@@ -73,7 +82,7 @@ namespace CityInfo.API.Controllers
 
             var selectedCity = await _cityInfoRepository.GetCityAsync(id, includePointsOfInterest);
 
-            if(selectedCity == null)
+            if (selectedCity == null)
             {
                 return NotFound();
             }
