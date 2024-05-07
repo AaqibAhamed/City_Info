@@ -17,7 +17,7 @@ namespace CityInfo.API.Services
         {
             var city = await GetCityAsync(cityId, false);
 
-            if(city != null)
+            if (city != null)
             {
                 city.PointsOfInterest.Add(pointOfInterest);
             }
@@ -36,6 +36,18 @@ namespace CityInfo.API.Services
         public async Task<IEnumerable<City>> GetAllCitiesAsync()
         {
             return await _context.Cities.OrderBy(c => c.Name).ToListAsync();
+        }
+
+        public async Task<IEnumerable<City>> GetCitiesByFiterAsync(string? name)
+        {
+            if (string.IsNullOrEmpty(name))
+            {
+                return await GetAllCitiesAsync();
+            }
+
+            name = name.Trim();
+
+            return await _context.Cities.Where(c => c.Name == name).OrderBy(c => c.Name).ToListAsync();
         }
 
         public async Task<City?> GetCityAsync(int cityId, bool includePointsOfInterest)
