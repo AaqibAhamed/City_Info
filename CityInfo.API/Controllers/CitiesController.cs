@@ -16,6 +16,8 @@ namespace CityInfo.API.Controllers
 
         private readonly IMapper _mapper;
 
+        int maxCitiesPageSize = 30;
+
         public CitiesController(ICityInfoRepository cityInfoRepository, IMapper mapper)
         {
             _cityInfoRepository = cityInfoRepository ?? throw new ArgumentNullException(nameof(cityInfoRepository));
@@ -55,10 +57,15 @@ namespace CityInfo.API.Controllers
 
         [HttpGet]
         public async Task<ActionResult<IEnumerable<CityWithoutPointOfInterestDto>>> GetCities(
-            [FromQuery(Name = "filterOnName")] string? name, string? searchQuery) //FromQuery added for redability - not mandatory
+            [FromQuery(Name = "filterOnName")] string? name, string? searchQuery, //FromQuery added for redability - not mandatory
+            int pageNumber = 1, int pageSize = 20)
         {
+            if (pageSize > maxCitiesPageSize)
+            {
+                pageSize = maxCitiesPageSize;
+            }
 
-            var cityEntites = await _cityInfoRepository.GetCities(name, searchQuery);
+            var cityEntites = await _cityInfoRepository.GetCities(name, searchQuery, pageNumber, pageSize);
 
             return Ok(_mapper.Map<IEnumerable<CityWithoutPointOfInterestDto>>(cityEntites));
 
