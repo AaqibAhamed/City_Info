@@ -54,10 +54,11 @@ namespace CityInfo.API.Controllers
         //}
 
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<CityWithoutPointOfInterestDto>>> GetCities([FromQuery(Name = "filterOnName")] string? name)
+        public async Task<ActionResult<IEnumerable<CityWithoutPointOfInterestDto>>> GetCities(
+            [FromQuery(Name = "filterOnName")] string? name, string? searchQuery) //FromQuery added for redability - not mandatory
         {
-            
-            var cityEntites = await _cityInfoRepository.GetCitiesByFiterAsync(name);
+
+            var cityEntites = await _cityInfoRepository.GetCities(name, searchQuery);
 
             return Ok(_mapper.Map<IEnumerable<CityWithoutPointOfInterestDto>>(cityEntites));
 
