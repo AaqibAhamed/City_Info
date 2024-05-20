@@ -6,7 +6,7 @@ namespace CityInfo.API.Services
     {
         Task<IEnumerable<City>> GetAllCitiesAsync();
 
-        Task<IEnumerable<City>> GetCitiesByFiterAsync(string? name);
+        Task<IEnumerable<City>> GetCities(string? name, string? searchQuery);
 
         Task<City?> GetCityAsync(int cityId, bool includePointsOfInterest);
 
