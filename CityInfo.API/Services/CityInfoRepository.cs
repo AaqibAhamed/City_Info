@@ -38,7 +38,7 @@ namespace CityInfo.API.Services
             return await _context.Cities.OrderBy(c => c.Name).ToListAsync();
         }
 
-        public async Task<IEnumerable<City>> GetCities(string? name, string? searchQuery,int pageNumber,  int pageSize)
+        public async Task<(IEnumerable<City>, PaginationMetaData)> GetCities(string? name, string? searchQuery, int pageNumber, int pageSize)
         {
             /* if (string.IsNullOrEmpty(name) && string.IsNullOrWhiteSpace(searchQuery))
             {
@@ -65,15 +65,21 @@ namespace CityInfo.API.Services
             /*   
          name = name.Trim();
 
-        return await _context.Cities.Where(c => c.Name == name).OrderBy(c => c.Name).ToListAsync();
+         return await _context.Cities.Where(c => c.Name == name).OrderBy(c => c.Name).ToListAsync();
          */
 
-          //  return await cityCollections.OrderBy(c => c.Name).ToListAsync();
+            //  return await cityCollections.OrderBy(c => c.Name).ToListAsync();
 
-          return await cityCollections.OrderBy(c=>c.Name)
-            .Skip(pageSize * (pageNumber - 1))
-            .Take(pageSize)
-            .ToListAsync();
+            var totalItemCount = await _context.Cities.CountAsync();
+
+            var paginationMetaData = new PaginationMetaData(totalItemCount, pageSize, pageNumber);
+
+            var collectionToReturn = await cityCollections.OrderBy(c => c.Name)
+              .Skip(pageSize * (pageNumber - 1))
+              .Take(pageSize)
+              .ToListAsync();
+
+            return (collectionToReturn, paginationMetaData);
 
 
         }
