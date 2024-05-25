@@ -60,9 +60,13 @@ namespace CityInfo.API.Controllers
             }
 
             // create Token
-            var securityKey = new SymmetricSecurityKey(Convert.FromBase64String(_configuration["Authentication:SecretForKey"] ?? ""));
+            var securityKey = new SymmetricSecurityKey(Convert.FromBase64String(_configuration["Authentication:SecretForKey"] ));
+
+            Console.WriteLine("securityKey "+ securityKey);
 
             var signingCredentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
+
+            Console.WriteLine("signingCredentials " + signingCredentials);
 
             // Claim the token
 
@@ -73,13 +77,20 @@ namespace CityInfo.API.Controllers
             claimsForToken.Add(new Claim("family_name", authenticate.LastName));
             claimsForToken.Add(new Claim("city", authenticate.City));
 
+            Console.WriteLine("claimsForToken "+ claimsForToken.ToList());
+
+
+            Console.WriteLine("_configuration " + _configuration);
+
             var jwtSecurityToken = new JwtSecurityToken(
-                _configuration["Authentication : Audience"],
-                _configuration["Authentication : Issuer"],
+                _configuration["Authentication:Issuer"],
+                _configuration["Authentication:Audience"],
                 claimsForToken,
                 DateTime.UtcNow,
                 DateTime.UtcNow.AddHours(1),
                 signingCredentials);
+
+            Console.WriteLine("jwtSecurityToken " + jwtSecurityToken);
 
             var tokenToReturn = new JwtSecurityTokenHandler().WriteToken(jwtSecurityToken);
 
@@ -90,8 +101,12 @@ namespace CityInfo.API.Controllers
 
         private CityUserInfo ValidateUserCredentials(string? userName, string? password)
         {
-            // we should have user table to validate UserCredentials 
-            // for demo only will use dummy value
+            // we don't have a user DB or table.  If you have, check the passed-through
+            // username/password against what's stored in the database.
+            //
+            // For demo purposes, we assume the credentials are valid
+
+            // return a new CityInfoUser (values would normally come from your user DB/table)
 
             return new CityUserInfo(
                 1,
