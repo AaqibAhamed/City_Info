@@ -11,7 +11,7 @@ namespace CityInfo.API.Controllers
     [Route("api/cities/{cityId}/pointsofinterest")]
     [ApiController]
     [Authorize]
-    public class PointsOfInterestController : Controller
+    public class PointsOfInterestController : ControllerBase
     {
         private readonly ILogger<PointsOfInterestController> _logger;
 
@@ -43,16 +43,14 @@ namespace CityInfo.API.Controllers
         {
             try
             {
-                //var city = _citiesDataStore.Cities.FirstOrDefault(c => c.Id == cityId);
+                var cityName = User.Claims.FirstOrDefault(c => c.Type == "city")?.Value;
 
-                //if (city == null)
-                //{
-                //    _logger.LogInformation($"City with id {cityId} was not found when accessing PointsOfInterest ");
+                //Add authorization policy control for GetPointsOfInterest for a city for specific user
+                if (!await _cityInfoRepository.CityIdMatchesCityName(cityId, cityName))
+                {
+                    return Forbid();
+                }
 
-                //    return NotFound();
-                //}
-
-                //return Ok(city.PointsOfInterest);
 
                 if (!await _cityInfoRepository.CityExistsAsync(cityId))
                 {
@@ -69,6 +67,18 @@ namespace CityInfo.API.Controllers
                 }
 
                 return Ok(_mapper.Map<IEnumerable<PointOfInterestDto>>(pointsOfInterst));
+
+                //var city = _citiesDataStore.Cities.FirstOrDefault(c => c.Id == cityId);
+
+                //if (city == null)
+                //{
+                //    _logger.LogInformation($"City with id {cityId} was not found when accessing PointsOfInterest ");
+
+                //    return NotFound();
+                //}
+
+                //return Ok(city.PointsOfInterest);
+
 
             }
             catch (Exception ex)
