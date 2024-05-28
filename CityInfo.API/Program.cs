@@ -72,10 +72,21 @@ builder.Services.AddAuthentication("Bearer")
             ValidateIssuerSigningKey = true,
             ValidIssuer = builder.Configuration["Authentication:Issuer"],
             ValidAudience = builder.Configuration["Authentication:Audience"],
-            IssuerSigningKey = new SymmetricSecurityKey(Convert.FromBase64String(builder.Configuration["Authentication:SecretForKey"]?? "E37F60609B35ED737E23569F2CF0CBEC5976CA55CF6DBB3196BC619F50C3F093"))
+            IssuerSigningKey = new SymmetricSecurityKey(Convert.FromBase64String(builder.Configuration["Authentication:SecretForKey"] ?? "E37F60609B35ED737E23569F2CF0CBEC5976CA55CF6DBB3196BC619F50C3F093"))
         };
         Console.WriteLine("-------- op Bearer", options.TokenValidationParameters);
     });
+
+//AddAuthorization policy with RequireClaim city
+builder.Services.AddAuthorization(options =>
+{
+    options.AddPolicy("MustBeFromAntwerp", policy =>
+    {
+        policy.RequireAuthenticatedUser();
+        policy.RequireClaim("city", "Antwerp");
+    });
+
+});
 
 var app = builder.Build();
 
