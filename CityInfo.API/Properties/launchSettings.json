@@ -22,11 +22,11 @@
     "https": {
       "commandName": "Project",
       "dotnetRunMessages": true,
-      "launchBrowser": false, // false -Not open in browser because I'm using Postman
+      "launchBrowser": false, 
       "launchUrl": "swagger",
       "applicationUrl": "https://localhost:7260;http://localhost:5281",
       "environmentVariables": {
-        "ASPNETCORE_ENVIRONMENT": "Development" //Production
+        "ASPNETCORE_ENVIRONMENT": "Development" 
       }
     },
     "IIS Express": {
