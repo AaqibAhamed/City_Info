@@ -1,0 +1,10 @@
+﻿
+//Commands
+dotnet user-jwts create --help
+dotnet user-jwts create
+dotnet user-jwts create --issuer https://localhost:7260 --audience cityinfoapi
+dotnet user-jwts key --issuer https://localhost:7260
+dotnet user-jwts create --issuer https://localhost:7260 --audience cityinfoapi --claim "city=Antwerp"
+dotnet user-jwts list
+
+dotnet user-jwts print 47501e54 // 47501e54 =Token  ID
