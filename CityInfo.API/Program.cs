@@ -107,7 +107,48 @@ builder.Services.AddEndpointsApiExplorer();
 var apiVersionDescriptionProvider = builder.Services.BuildServiceProvider()
                                     .GetRequiredService<IApiVersionDescriptionProvider>();
 
-}).AddMvc();
+builder.Services.AddSwaggerGen(setupAction =>
+{
+    foreach (var description in
+       apiVersionDescriptionProvider.ApiVersionDescriptions)
+    {
+        setupAction.SwaggerDoc(
+            $"{description.GroupName}",
+            new()
+            {
+                Title = "City Info API",
+                Version = description.ApiVersion.ToString(),
+                Description = "Through this API you can access cities and their points of interest."
+            });
+    }
+
+    var xmlCommentsFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+    var xmlCommentsFullPath = Path.Combine(AppContext.BaseDirectory, xmlCommentsFile);
+
+    setupAction.IncludeXmlComments(xmlCommentsFullPath);
+
+    setupAction.AddSecurityDefinition("CityInfoApiBearerAuth", new() // Enable Authorization in Swagger Doc
+    {
+        Type = SecuritySchemeType.Http,
+        Scheme = "Bearer",
+        Description = "Input a valid token to access this API"
+    });
+
+    // openAppiSecurityRequirement Object - to add bearer token in OpenAPI DOC header request
+    setupAction.AddSecurityRequirement(new()    
+    {
+        {
+            new ()
+            {
+                Reference = new OpenApiReference {
+                    Type = ReferenceType.SecurityScheme,
+                    Id = "CityInfoApiBearerAuth" }
+            },
+            new List<string>()
+        }
+    });
+
+});
 
 var app = builder.Build();
 
