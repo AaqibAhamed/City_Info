@@ -1,4 +1,5 @@
 ﻿using System.Text.Json;
+using Asp.Versioning;
 using AutoMapper;
 using CityInfo.API.Models;
 using CityInfo.API.Services;
@@ -29,37 +30,6 @@ namespace CityInfo.API.Controllers
             _cityInfoRepository = cityInfoRepository ?? throw new ArgumentNullException(nameof(cityInfoRepository));
             _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
         }
-
-
-        /* [HttpGet]
-          public JsonResult GetCities()
-        {
-            return new JsonResult(_citiesDataStore.Cities);          
-        }*/
-
-        //[HttpGet]
-        //public async Task<ActionResult<IEnumerable<CityWithoutPointOfInterestDto>>> GetCities()
-        //{     
-
-        //    var cityEntites = await _cityInfoRepository.GetAllCitiesAsync();
-
-        //    var results = new List<CityWithoutPointOfInterestDto>();
-
-        //    foreach (var cityEntity in cityEntites)
-        //    {
-        //        results.Add(new CityWithoutPointOfInterestDto
-        //        {
-        //            Id = cityEntity.Id,
-        //            Name = cityEntity.Name,
-        //            Description = cityEntity.Description,
-        //        });
-
-        //    }
-        //   // return Ok(results);
-
-        //    return Ok(_mapper.Map<IEnumerable<CityWithoutPointOfInterestDto>>(cityEntites));
-
-        //}
 
         [HttpGet]
         public async Task<ActionResult<IEnumerable<CityWithoutPointOfInterestDto>>> GetCities(
@@ -93,23 +63,8 @@ namespace CityInfo.API.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
 
         public async Task<IActionResult> GetCitiy(int cityId, bool includePointsOfInterest = false)
-         {
-             return new JsonResult (_citiesDataStore.Cities.FirstOrDefault(x => x.Id == id));
-         }*/
-
-        [HttpGet("{id}")]
-        public async Task<IActionResult> GetCitiy(int id, bool includePointsOfInterest = false)
         {
-            //var selectedCity = (_citiesDataStore.Cities.FirstOrDefault(c => c.Id == id));
-
-            //if (selectedCity == null)
-            //{
-            //    return NotFound();
-            //}
-
-            //return Ok(selectedCity);
-
-            var selectedCity = await _cityInfoRepository.GetCityAsync(id, includePointsOfInterest);
+            var selectedCity = await _cityInfoRepository.GetCityAsync(cityId, includePointsOfInterest);
 
             if (selectedCity == null)
             {
@@ -123,7 +78,51 @@ namespace CityInfo.API.Controllers
 
             return Ok(_mapper.Map<CityDto>(selectedCity));
 
+            //var selectedCity = (_citiesDataStore.Cities.FirstOrDefault(c => c.Id == id));
+
+            //if (selectedCity == null)
+            //{
+            //    return NotFound();
+            //}
+
+            //return Ok(selectedCity);
+
 
         }
+
+        /* public JsonResult GetCity(int id)
+      {
+          return new JsonResult (_citiesDataStore.Cities.FirstOrDefault(x => x.Id == id));
+      }*/
+
+        /* [HttpGet]
+          public JsonResult GetCities()
+        {
+            return new JsonResult(_citiesDataStore.Cities);          
+        }*/
+
+        //[HttpGet]
+        //public async Task<ActionResult<IEnumerable<CityWithoutPointOfInterestDto>>> GetCities()
+        //{     
+
+        //    var cityEntites = await _cityInfoRepository.GetAllCitiesAsync();
+
+        //    var results = new List<CityWithoutPointOfInterestDto>();
+
+        //    foreach (var cityEntity in cityEntites)
+        //    {
+        //        results.Add(new CityWithoutPointOfInterestDto
+        //        {
+        //            Id = cityEntity.Id,
+        //            Name = cityEntity.Name,
+        //            Description = cityEntity.Description,
+        //        });
+
+        //    }
+        //   // return Ok(results);
+
+        //    return Ok(_mapper.Map<IEnumerable<CityWithoutPointOfInterestDto>>(cityEntites));
+
+        //}
     }
 }
