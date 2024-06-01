@@ -89,12 +89,23 @@ builder.Services.AddAuthorization(options =>
 
 });
 
-builder.Services.AddApiVersioning(setupAction =>
+builder.Services.AddApiVersioning(setupAction => // Add API version to endpoints
 {
     setupAction.ReportApiVersions = true;
     setupAction.AssumeDefaultVersionWhenUnspecified = true;
     setupAction.DefaultApiVersion = new ApiVersion(1, 0);
 
+}).AddMvc()
+.AddApiExplorer(setupAction => // add apiversions of url in Swagger
+{
+    setupAction.SubstituteApiVersionInUrl = true;
+});
+
+// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
+builder.Services.AddEndpointsApiExplorer();
+
+var apiVersionDescriptionProvider = builder.Services.BuildServiceProvider()
+                                    .GetRequiredService<IApiVersionDescriptionProvider>();
 
 }).AddMvc();
 
