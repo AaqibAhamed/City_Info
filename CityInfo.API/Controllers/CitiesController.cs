@@ -79,7 +79,20 @@ namespace CityInfo.API.Controllers
 
         }
 
-        /* public JsonResult GetCity(int id)
+        /// <summary>
+        /// Get a city by id
+        /// </summary>
+        /// <param name="cityId"></param>
+        /// <param name="includePointsOfInterest">Whether or not to include the points of interest</param>
+        /// <returns>>A city with or without points of interest</returns>
+        /// <response code="200">Returns the requested city</response>
+        
+        [HttpGet("{cityId}")]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+
+        public async Task<IActionResult> GetCitiy(int cityId, bool includePointsOfInterest = false)
          {
              return new JsonResult (_citiesDataStore.Cities.FirstOrDefault(x => x.Id == id));
          }*/
