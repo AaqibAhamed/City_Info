@@ -56,7 +56,7 @@ namespace CityInfo.API.Controllers
         /// <param name="includePointsOfInterest">Whether or not to include the points of interest</param>
         /// <returns>>A city with or without points of interest</returns>
         /// <response code="200">Returns the requested city</response>
-        
+
         [HttpGet("{cityId}")]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]

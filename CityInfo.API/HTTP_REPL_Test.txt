@@ -1,0 +1,138 @@
+﻿httprepl
+dotnet tool list -g
+httprepl -h
+httprepl https://localhost:7260  // https://localhost:7260 -- api applicationUrl
+ls
+--connect https://localhost:7260
+ connect https://localhost:7260 --openapi https://localhost:7260/swagger/2.0/swagger.json
+ ls
+
+ 
+https://localhost:7260/> ls
+.     []
+api   []
+
+https://localhost:7260/> cd api
+/api    []
+
+https://localhost:7260/api> ls
+.    []
+..   []
+v2   []
+
+https://localhost:7260/api> cd v2
+/api/v2    []
+
+https://localhost:7260/api/v2> ls
+.        []
+..       []
+cities   [GET]
+
+https://localhost:7260/api/v2> cd cities
+/api/v2/cities    [GET]
+
+https://localhost:7260/api/v2/cities> get
+HTTP/1.1 200 OK
+api-supported-versions: 1.0, 2.0
+Content-Length: 247
+Content-Type: application/json; charset=utf-8
+Date: Sun, 02 Jun 2024 04:01:28 GMT
+Server: Kestrel
+X-Pagination: {"TotalItemCount":3,"PageSize":20,"CurrentPageNumber":1,"TotalPageCount":1}
+
+[
+  {
+    "id": 2,
+    "name": "Antwerp",
+    "description": "The one with the cathedral that was never really finished."
+  },
+  {
+    "id": 1,
+    "name": "New York City",
+    "description": "The one with that big park."
+  },
+  {
+    "id": 3,
+    "name": "Paris",
+    "description": "The one with that big tower."
+  }
+]
+
+
+ httprepl https://localhost:7260 --openapi https://localhost:7260/swagger/2.0/swagger.json
+
+
+ C:\Users\aaqib>connect https://localhost:7260 --openapi https://localhost:7260/swagger/2.0/swagger.json
+'connect' is not recognized as an internal or external command,
+operable program or batch file.
+
+C:\Users\aaqib> httprepl https://localhost:7260 --openapi https://localhost:7260/swagger/2.0/swagger.json
+(Disconnected)> connect https://localhost:7260 --openapi https://localhost:7260/swagger/2.0/swagger.json
+Checking https://localhost:7260/swagger/2.0/swagger.json... Found
+Parsing... Successful
+
+Using a base address of https://localhost:7260/
+Using OpenAPI description at https://localhost:7260/swagger/2.0/swagger.json
+For detailed tool info, see https://aka.ms/http-repl-doc
+
+https://localhost:7260/> ls
+.     []
+api   []
+
+https://localhost:7260/> api
+No matching command found
+Execute 'help' to see available commands
+
+https://localhost:7260/> cd api/v2/cities
+/api/v2/cities    [GET]
+
+https://localhost:7260/api/v2/cities> ls
+.          [GET]
+..         []
+{cityId}   [GET]
+
+https://localhost:7260/api/v2/cities> cd 1
+/api/v2/cities/1    [GET]
+
+https://localhost:7260/api/v2/cities/1> ls
+.                  [GET]
+..                 [GET]
+pointsofinterest   [GET|POST]
+
+https://localhost:7260/api/v2/cities/1> cd pointsofinterest
+/api/v2/cities/1/pointsofinterest    [GET|POST]
+
+https://localhost:7260/api/v2/cities/1/pointsofinterest> help post
+
+Usage: POST [Options]
+
+Issues a POST request.
+Your default editor will be opened with a sample body if no options are provided.
+
+
+Options:
+    --header|-h
+    --response:headers
+    --response:body
+    --no-formatting|-F
+    --streaming|-s
+    --no-body
+    --file|-f
+    --content|-c
+
+https://localhost:7260/api/v2/cities/1/pointsofinterest> pref set editor.command.default C:/Windows/system32/notepad.exe
+
+https://localhost:7260/api/v2/cities/1/pointsofinterest> post -h Content-Type:application/json -h Accept:application/json
+HTTP/1.1 201 Created
+api-supported-versions: 2.0
+Content-Length: 99
+Content-Type: application/json; charset=utf-8
+Date: Sun, 02 Jun 2024 05:14:42 GMT
+Location: https://localhost:7260/api/v2/cities/1/pointsofinterest/16
+Server: Kestrel
+
+{
+  "id": 16,
+  "name": "A name for HTTP REPL Testing",
+  "description": "A description for HTTP REPL Testing"
+}
