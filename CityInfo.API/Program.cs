@@ -1,8 +1,12 @@
 using Asp.Versioning;
 using Asp.Versioning.ApiExplorer;
+using Azure.Extensions.AspNetCore.Configuration.Secrets;
+using Azure.Identity;
+using Azure.Security.KeyVault.Secrets;
 using CityInfo.API;
 using CityInfo.API.DbContexts;
 using CityInfo.API.Services;
+using Microsoft.ApplicationInsights.Extensibility;
 using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.AspNetCore.Mvc.ApiExplorer;
 using Microsoft.AspNetCore.StaticFiles;
@@ -15,7 +19,7 @@ using System.Reflection;
 Log.Logger = new LoggerConfiguration()
     .MinimumLevel.Debug()
     .WriteTo.Console()
-    .WriteTo.File("logs/cityinfo.txt", rollingInterval: RollingInterval.Day)
+   // .WriteTo.File("logs/cityinfo.txt", rollingInterval: RollingInterval.Day)
     .CreateLogger();
 
 var builder = WebApplication.CreateBuilder(args);
@@ -23,7 +27,36 @@ var builder = WebApplication.CreateBuilder(args);
 //builder.Logging.ClearProviders(); // Inbuild logger no need using serilog
 //builder.Logging.AddConsole(); // Inbuild logger no need using serilog
 
-builder.Host.UseSerilog(); //register serilog
+var environment = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT");
+
+if (environment == Environments.Development)
+{
+    //builder.Host.UseSerilog(); //register serilog
+
+    builder.Host.UseSerilog(
+        (context, loggerConfiguration) => loggerConfiguration
+            .MinimumLevel.Debug()
+            .WriteTo.File("logs/cityinfo.txt", rollingInterval: RollingInterval.Day)//
+            .WriteTo.Console());
+}
+else
+{
+    var secretClient = new SecretClient(
+            new Uri("https://pluralsightdemokeyvault.vault.azure.net/"),// api hosted uri
+            new DefaultAzureCredential());
+    builder.Configuration.AddAzureKeyVault(secretClient,
+        new KeyVaultSecretManager());
+
+    builder.Host.UseSerilog(
+        (context, loggerConfiguration) => loggerConfiguration
+            .MinimumLevel.Debug()
+            .WriteTo.Console()
+            .WriteTo.File("logs/cityinfo.txt", rollingInterval: RollingInterval.Day)
+            .WriteTo.ApplicationInsights(new TelemetryConfiguration
+            {
+                InstrumentationKey = builder.Configuration["ApplicationInsightsInstrumentationKey"]
+            }, TelemetryConverter.Traces));
+}
 
 // Add services to the container.
 
@@ -46,7 +79,8 @@ builder.Services.AddProblemDetails();
 //    };
 //});
 
-builder.Services.AddSingleton<FileExtensionContentTypeProvider>(); // mapping file extentions in requestion application/pdf
+// mapping file extentions in requestion application/pdf
+builder.Services.AddSingleton<FileExtensionContentTypeProvider>(); 
 
 # if DEBUG
 builder.Services.AddTransient<IMailService, LocalMailService>();
@@ -74,7 +108,8 @@ builder.Services.AddAuthentication("Bearer")
             ValidateIssuerSigningKey = true,
             ValidIssuer = builder.Configuration["Authentication:Issuer"],
             ValidAudience = builder.Configuration["Authentication:Audience"],
-            IssuerSigningKey = new SymmetricSecurityKey(Convert.FromBase64String(builder.Configuration["Authentication:SecretForKey"] ?? "E37F60609B35ED737E23569F2CF0CBEC5976CA55CF6DBB3196BC619F50C3F093"))
+            IssuerSigningKey = new SymmetricSecurityKey(
+                Convert.FromBase64String(builder.Configuration["Authentication:SecretForKey"] ?? "E37F60609B35ED737E23569F2CF0CBEC5976CA55CF6DBB3196BC619F50C3F093"))
         };
         Console.WriteLine("-------- op Bearer", options.TokenValidationParameters);
     });
