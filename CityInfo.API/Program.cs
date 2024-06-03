@@ -107,7 +107,7 @@ builder.Services.AddEndpointsApiExplorer();
 
 var apiVersionDescriptionProvider = builder.Services.BuildServiceProvider()
                                     .GetRequiredService<IApiVersionDescriptionProvider>();
- 
+
 builder.Services.AddSwaggerGen(setupAction =>
 {
     foreach (var description in
@@ -136,7 +136,7 @@ builder.Services.AddSwaggerGen(setupAction =>
     });
 
     // openAppiSecurityRequirement Object - to add bearer token in OpenAPI DOC header request
-    setupAction.AddSecurityRequirement(new()    
+    setupAction.AddSecurityRequirement(new()
     {
         {
             new ()
@@ -167,20 +167,20 @@ if (!app.Environment.IsDevelopment())
 
 app.UseForwardedHeaders();
 
-if (app.Environment.IsDevelopment())
+//if (app.Environment.IsDevelopment())
+//{
+app.UseSwagger();
+app.UseSwaggerUI(setupAction => // Filter Api Endpoint based on API Version in Swagger Docs
 {
-    app.UseSwagger();
-    app.UseSwaggerUI(setupAction => // Filter Api Endpoint based on API Version in Swagger Docs
+    var descriptions = app.DescribeApiVersions();
+    foreach (var description in descriptions)
     {
-        var descriptions = app.DescribeApiVersions();
-        foreach (var description in descriptions)
-        {
-            setupAction.SwaggerEndpoint(
-                $"/swagger/{description.GroupName}/swagger.json",
-                description.GroupName.ToUpperInvariant());
-        }
-    });
-}
+        setupAction.SwaggerEndpoint(
+            $"/swagger/{description.GroupName}/swagger.json",
+            description.GroupName.ToUpperInvariant());
+    }
+});
+//}
 
 app.UseHttpsRedirection();
 
