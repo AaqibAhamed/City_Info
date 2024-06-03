@@ -1,0 +1,54 @@
+# For more info on HTTP files go to https://aka.ms/vs/httpfile
+@schema =https
+@hostname =localhost
+@port = 7260
+
+GET {{schema}}://{{hostname}}:{{port}}/api/v2/cities
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxIiwiZ2l2ZW5fbmFtZSI6IkFhcWliIiwiZmFtaWx5X25hbWUiOiJXaWtpIiwiY2l0eSI6IkFudHdlcnAiLCJuYmYiOjE3MTczOTI4MjIsImV4cCI6MTcxNzM5NjQyMiwiaXNzIjoiaHR0cHM6Ly9sb2NhbGhvc3Q6NzI2MCIsImF1ZCI6ImNpdHlpbmZvYXBpIn0.KaSXuiw-EBP4e3fkP_TEd1WY9Mq_rBVnNe92r3j_Jc0
+
+###
+GET {{schema}}://{{hostname}}:{{port}}/api/v2/cities
+Accept:application/xml
+
+###
+POST {{schema}}://{{hostname}}:{{port}}/api/v2/cities/1/pointsofinterest
+Accept:application/json
+Content-Type:application/json
+
+{
+    "name": "Test poi",
+    "description": "Test poi description"
+}
+
+###
+# @name createpoi
+POST {{schema}}://{{hostname}}:{{port}}/api/v2/cities/1/pointsofinterest
+Accept:application/json
+Content-Type:application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxIiwiZ2l2ZW5fbmFtZSI6IkFhcWliIiwiZmFtaWx5X25hbWUiOiJXaWtpIiwiY2l0eSI6IkFudHdlcnAiLCJuYmYiOjE3MTczOTI4MjIsImV4cCI6MTcxNzM5NjQyMiwiaXNzIjoiaHR0cHM6Ly9sb2NhbGhvc3Q6NzI2MCIsImF1ZCI6ImNpdHlpbmZvYXBpIn0.KaSXuiw-EBP4e3fkP_TEd1WY9Mq_rBVnNe92r3j_Jc0
+
+{
+    "name": "Test poi and get",
+    "description": "Test poi get description"
+}
+
+###
+@poiid = 26//{{createpoi.response.body.id}}
+
+GET {{schema}}://{{hostname}}:{{port}}/api/v2/cities/1/pointsofinterest/{{poiid}}
+Accept:application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxIiwiZ2l2ZW5fbmFtZSI6IkFhcWliIiwiZmFtaWx5X25hbWUiOiJXaWtpIiwiY2l0eSI6IkFudHdlcnAiLCJuYmYiOjE3MTczOTI4MjIsImV4cCI6MTcxNzM5NjQyMiwiaXNzIjoiaHR0cHM6Ly9sb2NhbGhvc3Q6NzI2MCIsImF1ZCI6ImNpdHlpbmZvYXBpIn0.KaSXuiw-EBP4e3fkP_TEd1WY9Mq_rBVnNe92r3j_Jc0
+
+###
+POST {{schema}}://{{hostname}}:{{port}}/api/Authentication/authenticate
+Content-Type:application/json
+
+{
+    "username": "AaqibWiki",
+    "password": "This is a relatively long sentence that acts as my password"
+}
+
+###
+//Authenticated Request
+GET {{schema}}://{{hostname}}:{{port}}/api/v2/cities
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxIiwiZ2l2ZW5fbmFtZSI6IkFhcWliIiwiZmFtaWx5X25hbWUiOiJXaWtpIiwiY2l0eSI6IkFudHdlcnAiLCJuYmYiOjE3MTczOTI4MjIsImV4cCI6MTcxNzM5NjQyMiwiaXNzIjoiaHR0cHM6Ly9sb2NhbGhvc3Q6NzI2MCIsImF1ZCI6ImNpdHlpbmZvYXBpIn0.KaSXuiw-EBP4e3fkP_TEd1WY9Mq_rBVnNe92r3j_Jc0
