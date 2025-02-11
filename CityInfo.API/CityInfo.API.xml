@@ -69,5 +69,20 @@
             The description of the city
             </summary>
         </member>
+        <member name="T:CityInfo.API.Models.PointOfInterestUpdateDto">
+            <summary>
+            Point Of Interest Update Dto
+            </summary>
+        </member>
+        <member name="P:CityInfo.API.Models.PointOfInterestUpdateDto.Name">
+            <summary>
+             The name of the Point Of Interest 
+            </summary>
+        </member>
+        <member name="P:CityInfo.API.Models.PointOfInterestUpdateDto.Description">
+            <summary>
+             The description of the Point Of Interest
+            </summary>
+        </member>
     </members>
 </doc>
